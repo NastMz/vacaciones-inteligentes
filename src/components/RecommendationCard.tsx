@@ -31,6 +31,9 @@ export function RecommendationCard({
         </span>
         <span className="text-success/60 text-xl">días de descanso</span>
       </div>
+      <p className="mb-6 text-sm font-semibold text-success">
+        +{r.extraRestDays} días extra por fines de semana y festivos
+      </p>
 
       {/* Dates */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
@@ -59,7 +62,8 @@ export function RecommendationCard({
       {/* Stats */}
       <div className="flex gap-6 flex-wrap pt-4 border-t border-success/[0.15] mb-4">
         <Stat value={r.vacationDaysUsed} label="días usados" />
-        <Stat value={`${r.efficiencyRatio}×`} label="eficiencia" highlight />
+        <Stat value={`+${r.extraRestDays}`} label="días extra" highlight />
+        <Stat value={`${r.efficiencyRatio}×`} label="ratio" />
         <Stat value={r.holidaysIncluded.length} label="festivos" />
         <Stat value={r.weekendsIncluded} label="fines de sem." />
       </div>

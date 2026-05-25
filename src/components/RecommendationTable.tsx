@@ -22,7 +22,7 @@ export function RecommendationTable({
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-white/[0.05]">
-              {["#", "Días cobrados", "Descanso real", "Vuelves", "Días", "Efic.", "Festivos", "Acción"].map(
+              {["#", "Días cobrados", "Descanso real", "Vuelves", "Días", "+ Extra", "Ratio", "Festivos", "Acción"].map(
                 (h) => (
                   <th
                     key={h}
@@ -106,7 +106,10 @@ function Row({
       <td className={td + " text-center font-semibold text-[#c8dce8]"}>
         {r.calendarDaysRested}
       </td>
-      <td className={td + " text-center text-[#6a8ba0]"}>
+      <td className={td + " text-center font-semibold text-success whitespace-nowrap"}>
+        +{r.extraRestDays} extra
+      </td>
+      <td className={td + " text-center text-[#6a8ba0] whitespace-nowrap"}>
         {r.efficiencyRatio}×
       </td>
       <td className={td + " text-[#4a6a80] max-w-[180px] truncate"}>

@@ -21,6 +21,7 @@ export type VacationRecommendation = {
   returnToWorkDate: string;
   vacationDaysUsed: number;
   calendarDaysRested: number;
+  extraRestDays: number;
   efficiencyRatio: number;
   holidaysIncluded: Holiday[];
   weekendsIncluded: number;

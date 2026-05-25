@@ -42,6 +42,7 @@ describe("generateRecommendations", () => {
         requestEndDate: "2025-04-16",
         vacationDaysUsed: 1,
         calendarDaysRested: 5,
+        extraRestDays: 4,
         efficiencyRatio: 5,
       })
     );
@@ -69,6 +70,7 @@ describe("generateRecommendations", () => {
         requestEndDate: "2025-04-16",
         vacationDaysUsed: 2,
         calendarDaysRested: 6,
+        extraRestDays: 4,
         efficiencyRatio: 3,
       })
     );
@@ -78,7 +80,41 @@ describe("generateRecommendations", () => {
         requestEndDate: "2025-04-16",
         vacationDaysUsed: 1,
         calendarDaysRested: 5,
+        extraRestDays: 4,
         efficiencyRatio: 5,
+      })
+    );
+  });
+
+  it("prioritizes extra rest days over raw ratio for MAX_EFFICIENCY", () => {
+    const recommendations = generateRecommendations(
+      createInput({
+        vacationDaysToUse: 5,
+        searchStartDate: "2025-10-31",
+        searchEndDate: "2025-11-07",
+        optimizationMode: "MAX_EFFICIENCY",
+      })
+    );
+
+    expect(recommendations[0]).toEqual(
+      expect.objectContaining({
+        requestStartDate: "2025-11-04",
+        requestEndDate: "2025-11-07",
+        vacationDaysUsed: 4,
+        calendarDaysRested: 9,
+        extraRestDays: 5,
+        efficiencyRatio: 2.25,
+      })
+    );
+
+    expect(recommendations).toContainEqual(
+      expect.objectContaining({
+        requestStartDate: "2025-10-31",
+        requestEndDate: "2025-10-31",
+        vacationDaysUsed: 1,
+        calendarDaysRested: 4,
+        extraRestDays: 3,
+        efficiencyRatio: 4,
       })
     );
   });
@@ -281,7 +317,7 @@ describe("generateRecommendations", () => {
     }
   });
 
-  it("returns recommendations sorted by efficiency for MAX_EFFICIENCY", () => {
+  it("returns recommendations sorted by extra rest days for MAX_EFFICIENCY", () => {
     const recommendations = generateRecommendations(
       createInput({
         vacationDaysToUse: 3,
@@ -298,16 +334,18 @@ describe("generateRecommendations", () => {
       const current = recommendations[index];
 
       expect(
-        previous.efficiencyRatio > current.efficiencyRatio ||
-          (previous.efficiencyRatio === current.efficiencyRatio &&
-            (previous.calendarDaysRested > current.calendarDaysRested ||
-              (previous.calendarDaysRested === current.calendarDaysRested &&
-                previous.vacationDaysUsed <= current.vacationDaysUsed)))
+        previous.extraRestDays > current.extraRestDays ||
+          (previous.extraRestDays === current.extraRestDays &&
+            (previous.efficiencyRatio > current.efficiencyRatio ||
+              (previous.efficiencyRatio === current.efficiencyRatio &&
+                (previous.vacationDaysUsed < current.vacationDaysUsed ||
+                  (previous.vacationDaysUsed === current.vacationDaysUsed &&
+                    previous.calendarDaysRested >= current.calendarDaysRested)))))
       ).toBe(true);
     }
   });
 
-  it("breaks MAX_EFFICIENCY ties by preferring longer real rest before fewer charged days", () => {
+  it("breaks MAX_EFFICIENCY ties by preferring fewer charged days before longer raw rest", () => {
     const recommendations = generateRecommendations(
       createInput({
         vacationDaysToUse: 2,
@@ -320,9 +358,10 @@ describe("generateRecommendations", () => {
     expect(recommendations[0]).toEqual(
       expect.objectContaining({
         requestStartDate: "2025-02-04",
-        requestEndDate: "2025-02-05",
-        vacationDaysUsed: 2,
-        calendarDaysRested: 2,
+        requestEndDate: "2025-02-04",
+        vacationDaysUsed: 1,
+        calendarDaysRested: 1,
+        extraRestDays: 0,
         efficiencyRatio: 1,
       })
     );

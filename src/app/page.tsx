@@ -45,7 +45,7 @@ export default function Home() {
   const rankingExplanation = submittedContext
     ? submittedContext.optimizationMode === "MAX_TOTAL_REST"
       ? `Ranking priorizado por descanso total: busca la mayor cantidad de días seguidos fuera, usando hasta ${submittedContext.vacationDaysToUse} días disponibles.`
-      : `Ranking priorizado por eficiencia: busca el mejor descanso por cada día cobrado y puede recomendar usar menos de ${submittedContext.vacationDaysToUse} días disponibles.`
+      : `Ranking priorizado por aprovechamiento: busca sumar más días extra por fines de semana y festivos, y puede recomendar usar menos de ${submittedContext.vacationDaysToUse} días disponibles.`
     : null;
 
   return (

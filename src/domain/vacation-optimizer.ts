@@ -11,7 +11,7 @@ import { toDateKey, fromDateKey, addDays, isNonWorkingDay } from "./business-day
  *   2. Extiende hacia atrás mientras haya días no laborables (fines de semana / festivos).
  *   3. Extiende hacia adelante mientras haya días no laborables.
  *   4. El bloque resultante es el descanso real.
- *   5. Calcula días calendario y ratio de eficiencia.
+ *   5. Calcula días calendario, días extra y ratio secundario.
  * Deduplicación por ventana de descanso real (realRestStart::realRestEnd)
  * conservando primero el mejor candidato según el modo de optimización.
  */
@@ -112,6 +112,7 @@ export function generateRecommendations(
           Math.round(
             (realRestEnd.getTime() - realRestStart.getTime()) / 86400000
           ) + 1;
+        const extraRestDays = calendarDaysRested - vacationDaysUsed;
         const efficiencyRatio =
           Math.round((calendarDaysRested / vacationDaysUsed) * 100) / 100;
 
@@ -135,7 +136,7 @@ export function generateRecommendations(
 
         const score =
           optimizationMode === "MAX_EFFICIENCY"
-            ? efficiencyRatio
+            ? extraRestDays
             : calendarDaysRested;
 
         candidates.push({
@@ -146,6 +147,7 @@ export function generateRecommendations(
           returnToWorkDate: toDateKey(returnToWorkDate),
           vacationDaysUsed,
           calendarDaysRested,
+          extraRestDays,
           efficiencyRatio,
           holidaysIncluded,
           weekendsIncluded,
@@ -177,18 +179,29 @@ function compareRecommendations(
   b: VacationRecommendation,
   optimizationMode: VacationInput["optimizationMode"]
 ): number {
+  // MAX_EFFICIENCY en UI significa "Mejor aprovechamiento":
+  // primero más días extra, luego mejor ratio, luego menos días cobrados,
+  // después más descanso real y finalmente orden estable por fecha.
   if (optimizationMode === "MAX_EFFICIENCY") {
+    if (b.extraRestDays !== a.extraRestDays) {
+      return b.extraRestDays - a.extraRestDays;
+    }
+
     if (b.efficiencyRatio !== a.efficiencyRatio) {
       return b.efficiencyRatio - a.efficiencyRatio;
     }
 
-    // Con la misma eficiencia, priorizamos más descanso real antes de ahorrar
-    // otro día adicional para evitar resultados triviales con el mismo ratio.
+    if (a.vacationDaysUsed !== b.vacationDaysUsed) {
+      return a.vacationDaysUsed - b.vacationDaysUsed;
+    }
+
     if (b.calendarDaysRested !== a.calendarDaysRested) {
       return b.calendarDaysRested - a.calendarDaysRested;
     }
   } else if (b.calendarDaysRested !== a.calendarDaysRested) {
     return b.calendarDaysRested - a.calendarDaysRested;
+  } else if (b.extraRestDays !== a.extraRestDays) {
+    return b.extraRestDays - a.extraRestDays;
   } else if (b.efficiencyRatio !== a.efficiencyRatio) {
     return b.efficiencyRatio - a.efficiencyRatio;
   }

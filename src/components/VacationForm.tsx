@@ -97,13 +97,13 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
             onChange={setMode}
             options={[
               { value: "MAX_TOTAL_REST", label: "Más descanso" },
-              { value: "MAX_EFFICIENCY", label: "Más eficiencia" },
+              { value: "MAX_EFFICIENCY", label: "Mejor aprovechamiento" },
             ]}
           />
           <p className="mt-1 text-[11px] text-[#4a6a80] leading-relaxed">
             {mode === "MAX_TOTAL_REST"
-              ? "Maximiza días seguidos fuera, aunque cobre más días de vacaciones."
-              : "Maximiza descanso por cada día cobrado y puede guardar días para después."}
+              ? "Prioriza la mayor cantidad de días seguidos fuera."
+              : "Prioriza sumar más días extra por fines de semana y festivos."}
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
       <p className="mb-5 text-xs text-[#4a6a80] leading-relaxed">
         El rango de búsqueda limita los días de vacaciones cobrados; el descanso real
         puede extenderse por fines de semana o festivos. El optimizador puede usar
-        menos días si el modo eficiencia encuentra un mejor descanso por día cobrado.
+        menos días si el modo de mejor aprovechamiento encuentra más días extra.
       </p>
 
       <button
