@@ -3,16 +3,24 @@ import { formatDateFull, formatDateShort } from "@/lib/formatters";
 
 interface Props {
   recommendation: VacationRecommendation;
+  rank?: number;
+  isBest?: boolean;
 }
 
-export function RecommendationCard({ recommendation: r }: Props) {
+export function RecommendationCard({
+  recommendation: r,
+  rank = 1,
+  isBest = false,
+}: Props) {
+  const badgeLabel = isBest ? "✦ Mejor opción encontrada" : `Opción seleccionada #${rank}`;
+
   return (
     <div className="bg-success-bg border border-success/25 rounded-2xl p-6">
 
       {/* Badge */}
       <div className="flex items-center gap-2 mb-5">
         <span className="text-success text-xs font-semibold tracking-widest uppercase">
-          ✦ Mejor opción encontrada
+          {badgeLabel}
         </span>
       </div>
 

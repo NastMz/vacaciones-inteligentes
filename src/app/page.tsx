@@ -6,10 +6,18 @@ import { generateRecommendations } from "@/domain/vacation-optimizer";
 import { VacationForm } from "@/components/VacationForm";
 import { RecommendationCard } from "@/components/RecommendationCard";
 import { RecommendationTable } from "@/components/RecommendationTable";
+import { RecommendationCalendar } from "@/components/RecommendationCalendar";
+
+interface SubmittedContext {
+  year: number;
+  worksOnSaturday: boolean;
+}
 
 export default function Home() {
   const [results, setResults] = useState<VacationRecommendation[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [submittedContext, setSubmittedContext] = useState<SubmittedContext | null>(null);
 
   function handleSubmit(input: VacationInput) {
     setIsLoading(true);
@@ -17,9 +25,19 @@ export default function Home() {
     setTimeout(() => {
       const recommendations = generateRecommendations(input);
       setResults(recommendations);
+      setSelectedIndex(0);
+      setSubmittedContext({
+        year: input.year,
+        worksOnSaturday: input.worksOnSaturday,
+      });
       setIsLoading(false);
     }, 50);
   }
+
+  const selectedRecommendation =
+    results && results.length > 0
+      ? results[Math.min(selectedIndex, results.length - 1)]
+      : null;
 
   return (
     <main className="min-h-screen bg-navy-950 text-[#d1e4f0]">
@@ -47,9 +65,28 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <RecommendationCard recommendation={results[0]} />
+                {selectedRecommendation && (
+                  <>
+                    <RecommendationCard
+                      recommendation={selectedRecommendation}
+                      rank={selectedIndex + 1}
+                      isBest={selectedIndex === 0}
+                    />
+                    {submittedContext && (
+                      <RecommendationCalendar
+                        recommendation={selectedRecommendation}
+                        year={submittedContext.year}
+                        worksOnSaturday={submittedContext.worksOnSaturday}
+                      />
+                    )}
+                  </>
+                )}
                 {results.length > 1 && (
-                  <RecommendationTable recommendations={results} />
+                  <RecommendationTable
+                    recommendations={results}
+                    selectedIndex={selectedIndex}
+                    onSelect={setSelectedIndex}
+                  />
                 )}
               </>
             )}
