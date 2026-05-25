@@ -48,7 +48,7 @@ export function RecommendationCalendar({
     <section className="bg-navy-800 border border-white/[0.07] rounded-2xl p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
         <div>
-          <p className="text-[10px] font-semibold text-[#4a6a80] uppercase tracking-widest mb-1">
+          <p className="text-[10px] font-semibold text-[#8aa7b9] uppercase tracking-widest mb-1">
             Calendario del descanso
           </p>
           <h2 className="text-lg font-semibold text-[#d1e4f0]">
@@ -58,7 +58,7 @@ export function RecommendationCalendar({
             Del {formatDateFull(recommendation.realRestStartDate)} al{" "}
             {formatDateFull(recommendation.realRestEndDate)}
           </p>
-          <p className="text-xs text-[#4a6a80] mt-2 max-w-2xl">
+          <p className="text-xs text-[#8aa7b9] mt-2 max-w-2xl">
             Los días marcados como extensión forman parte del descanso real, pero no se cobran
             como vacaciones porque corresponden a festivos o días no laborables.
           </p>
@@ -79,7 +79,7 @@ export function RecommendationCalendar({
               <h3 className="text-sm font-semibold text-[#d1e4f0]">
                 {formatMonthTitle(days[0].dateKey)}
               </h3>
-              <span className="text-[11px] text-[#4a6a80]">{days.length} días</span>
+              <span className="text-[11px] text-[#8aa7b9]">{days.length} días</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -183,7 +183,7 @@ function DayCard({ day }: { day: CalendarDay }) {
     <article className={`rounded-xl border p-3 ${tone}`}>
       <div className="flex items-start justify-between gap-3 mb-2">
         <div>
-          <p className="text-[11px] uppercase tracking-wide text-[#4a6a80]">{weekday}</p>
+          <p className="text-[11px] uppercase tracking-wide text-[#8aa7b9]">{weekday}</p>
           <p className="font-mono text-base text-[#d1e4f0]">{day.dateKey}</p>
         </div>
         <span className="text-2xl font-mono text-[#d1e4f0] tabular-nums">{date}</span>

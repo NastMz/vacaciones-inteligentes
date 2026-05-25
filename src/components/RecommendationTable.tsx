@@ -14,11 +14,11 @@ export function RecommendationTable({
 }: Props) {
   return (
     <div className="bg-navy-800 border border-white/[0.07] rounded-2xl p-6">
-      <p className="text-[10px] font-semibold text-[#4a6a80] uppercase tracking-widest mb-4">
+      <p className="text-[10px] font-semibold text-[#8aa7b9] uppercase tracking-widest mb-4">
         Top {recommendations.length} opciones
       </p>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto themed-scrollbar pb-2">
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-white/[0.05]">
@@ -26,7 +26,7 @@ export function RecommendationTable({
                 (h) => (
                   <th
                     key={h}
-                    className="text-left py-2 px-3 text-[#3a5a70] font-semibold uppercase tracking-wide whitespace-nowrap"
+                    className="text-left py-2 px-3 text-[#8aa7b9] font-semibold uppercase tracking-wide whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -79,7 +79,7 @@ function Row({
       onClick={selectRow}
       aria-label={isSelected ? `Opción ${i + 1} seleccionada` : `Seleccionar opción ${i + 1}`}
     >
-      <td className={td + " text-[#3a5a70]"}>
+      <td className={td + " text-[#7ea0b7]"}>
         <div className="flex items-center gap-2 whitespace-nowrap">
           <span>{i + 1}</span>
           {isBest && (
@@ -97,7 +97,7 @@ function Row({
       <td className={td + " font-mono text-[#9ab8cc] whitespace-nowrap"}>
         {formatDateShort(r.requestStartDate)} → {formatDateShort(r.requestEndDate)}
       </td>
-      <td className={td + " font-mono text-[#5a7a8a] whitespace-nowrap"}>
+      <td className={td + " font-mono text-[#8aa7b9] whitespace-nowrap"}>
         {formatDateShort(r.realRestStartDate)} – {formatDateShort(r.realRestEndDate)}
       </td>
       <td className={td + " font-mono text-[#7ea0b7] whitespace-nowrap"}>
@@ -112,7 +112,7 @@ function Row({
       <td className={td + " text-center text-[#6a8ba0] whitespace-nowrap"}>
         {r.efficiencyRatio}×
       </td>
-      <td className={td + " text-[#4a6a80] max-w-[180px] truncate"}>
+      <td className={td + " text-[#7ea0b7] max-w-[180px] truncate"}>
         {r.holidaysIncluded.length > 0
           ? r.holidaysIncluded.map((h) => h.name).join(" · ")
           : "—"}

@@ -57,7 +57,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-accent tracking-tight mb-1">
             Vacaciones inteligentes
           </h1>
-          <p className="text-[#4a6a80] text-sm">
+          <p className="text-[#7ea0b7] text-sm">
             Optimizador de vacaciones · Colombia · Festivos y puentes nacionales
           </p>
         </header>
@@ -69,18 +69,18 @@ export default function Home() {
         {results !== null && (
           <section className="mt-6 space-y-4">
             {results.length === 0 ? (
-              <div className="text-center py-14 text-[#4a6a80] italic text-sm">
+              <div className="text-center py-14 text-[#7ea0b7] italic text-sm">
                 Sin resultados con esos parámetros. Intenta ampliar el rango de fechas.
               </div>
             ) : (
               <>
-                <p className="text-xs text-[#4a6a80] leading-relaxed">
+                <p className="text-xs text-[#8aa7b9] leading-relaxed">
                   Los resultados separan los días cobrados como vacaciones del descanso real.
                   Si el período toca fines de semana o festivos, tu ausencia puede extenderse sin
                   consumir días adicionales.
                 </p>
                 {rankingExplanation && (
-                  <p className="text-xs text-[#5a7a90] leading-relaxed">
+                  <p className="text-xs text-[#8aa7b9] leading-relaxed">
                     {rankingExplanation}
                   </p>
                 )}
@@ -113,7 +113,7 @@ export default function Home() {
         )}
 
         {/* Disclaimer */}
-        <footer className="mt-10 text-[#2a4a5a] text-xs text-center italic leading-relaxed">
+        <footer className="mt-10 text-[#5a7a90] text-xs text-center italic leading-relaxed">
           Este cálculo es informativo. La aprobación de vacaciones depende de las políticas
           internas de cada empleador, la jornada pactada y la disponibilidad operacional.
         </footer>

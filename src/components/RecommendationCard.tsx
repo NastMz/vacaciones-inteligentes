@@ -98,11 +98,11 @@ function DateBlock({
 }) {
   return (
     <div>
-      <p className="text-success/40 text-[10px] font-semibold uppercase tracking-widest mb-1.5">
+      <p className="text-success/75 text-[10px] font-semibold uppercase tracking-widest mb-1.5">
         {label}
       </p>
       <p className="text-success font-mono text-sm">{primary}</p>
-      <p className="text-success/60 font-mono text-sm">{secondary}</p>
+      <p className="text-success/80 font-mono text-sm">{secondary}</p>
     </div>
   );
 }
@@ -125,7 +125,7 @@ function Stat({
       >
         {value}
       </div>
-      <div className="text-success/35 text-[10px] uppercase tracking-wide mt-0.5">
+        <div className="text-success/85 text-[10px] uppercase tracking-wide mt-0.5">
         {label}
       </div>
     </div>
