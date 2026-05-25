@@ -66,9 +66,9 @@ export default function Home() {
             ) : (
               <>
                 <p className="text-xs text-[#4a6a80] leading-relaxed">
-                  Los resultados separan los d\u00edas cobrados como vacaciones del descanso real.
-                  Si el per\u00edodo toca fines de semana o festivos, tu ausencia puede extenderse sin
-                  consumir d\u00edas adicionales.
+                  Los resultados separan los días cobrados como vacaciones del descanso real.
+                  Si el período toca fines de semana o festivos, tu ausencia puede extenderse sin
+                  consumir días adicionales.
                 </p>
                 {results.length > 1 && (
                   <RecommendationTable
