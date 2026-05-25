@@ -11,6 +11,8 @@ import { RecommendationCalendar } from "@/components/RecommendationCalendar";
 interface SubmittedContext {
   year: number;
   worksOnSaturday: boolean;
+  optimizationMode: VacationInput["optimizationMode"];
+  vacationDaysToUse: number;
 }
 
 export default function Home() {
@@ -29,6 +31,8 @@ export default function Home() {
       setSubmittedContext({
         year: input.year,
         worksOnSaturday: input.worksOnSaturday,
+        optimizationMode: input.optimizationMode,
+        vacationDaysToUse: input.vacationDaysToUse,
       });
       setIsLoading(false);
     }, 50);
@@ -38,6 +42,11 @@ export default function Home() {
     results && results.length > 0
       ? results[Math.min(selectedIndex, results.length - 1)]
       : null;
+  const rankingExplanation = submittedContext
+    ? submittedContext.optimizationMode === "MAX_TOTAL_REST"
+      ? `Ranking priorizado por descanso total: busca la mayor cantidad de días seguidos fuera, usando hasta ${submittedContext.vacationDaysToUse} días disponibles.`
+      : `Ranking priorizado por eficiencia: busca el mejor descanso por cada día cobrado y puede recomendar usar menos de ${submittedContext.vacationDaysToUse} días disponibles.`
+    : null;
 
   return (
     <main className="min-h-screen bg-navy-950 text-[#d1e4f0]">
@@ -70,6 +79,11 @@ export default function Home() {
                   Si el período toca fines de semana o festivos, tu ausencia puede extenderse sin
                   consumir días adicionales.
                 </p>
+                {rankingExplanation && (
+                  <p className="text-xs text-[#5a7a90] leading-relaxed">
+                    {rankingExplanation}
+                  </p>
+                )}
                 {results.length > 1 && (
                   <RecommendationTable
                     recommendations={results}

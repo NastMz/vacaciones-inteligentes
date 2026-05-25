@@ -61,7 +61,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
 
         {/* Días */}
         <div>
-          <label htmlFor="days" className={fieldLabel}>Días hábiles a usar</label>
+          <label htmlFor="days" className={fieldLabel}>Días disponibles</label>
           <input
             id="days"
             type="number"
@@ -71,6 +71,9 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
             onChange={(e) => setDaysToUse(+e.target.value)}
             className={input}
           />
+          <p className="mt-1 text-[11px] text-[#4a6a80] leading-relaxed">
+            Hasta cuántos días querés usar.
+          </p>
         </div>
 
         {/* Sábados */}
@@ -93,10 +96,15 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
             value={mode}
             onChange={setMode}
             options={[
-              { value: "MAX_TOTAL_REST", label: "Más días" },
-              { value: "MAX_EFFICIENCY", label: "Eficiencia" },
+              { value: "MAX_TOTAL_REST", label: "Más descanso" },
+              { value: "MAX_EFFICIENCY", label: "Más eficiencia" },
             ]}
           />
+          <p className="mt-1 text-[11px] text-[#4a6a80] leading-relaxed">
+            {mode === "MAX_TOTAL_REST"
+              ? "Maximiza días seguidos fuera, aunque cobre más días de vacaciones."
+              : "Maximiza descanso por cada día cobrado y puede guardar días para después."}
+          </p>
         </div>
 
         {/* Desde */}
@@ -131,7 +139,8 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
 
       <p className="mb-5 text-xs text-[#4a6a80] leading-relaxed">
         El rango de búsqueda limita los días de vacaciones cobrados; el descanso real
-        puede extenderse por fines de semana o festivos.
+        puede extenderse por fines de semana o festivos. El optimizador puede usar
+        menos días si el modo eficiencia encuentra un mejor descanso por día cobrado.
       </p>
 
       <button
