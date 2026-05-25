@@ -121,7 +121,7 @@ describe("generateRecommendations", () => {
     ]);
   });
 
-  it("only limits the request start date with searchEndDate, not the request end date", () => {
+  it("excludes recommendations whose charged vacation range exceeds searchEndDate", () => {
     const recommendations = generateRecommendations(
       createInput({
         vacationDaysToUse: 3,
@@ -130,14 +130,39 @@ describe("generateRecommendations", () => {
       })
     );
 
+    expect(recommendations).toEqual([]);
+  });
+
+  it("computes returnToWorkDate as the first working day after the real rest ends", () => {
+    const recommendations = generateRecommendations(
+      createInput({
+        searchStartDate: "2025-01-03",
+        searchEndDate: "2025-01-03",
+      })
+    );
+
     expect(recommendations).toEqual([
       expect.objectContaining({
-        requestStartDate: "2025-12-29",
-        requestEndDate: "2025-12-31",
+        realRestEndDate: "2025-01-06",
+        returnToWorkDate: "2025-01-07",
       }),
+    ]);
+  });
+
+  it("can return to work on Saturday when Saturdays are working days", () => {
+    const recommendations = generateRecommendations(
+      createInput({
+        vacationDaysToUse: 1,
+        worksOnSaturday: true,
+        searchStartDate: "2025-01-03",
+        searchEndDate: "2025-01-03",
+      })
+    );
+
+    expect(recommendations).toEqual([
       expect.objectContaining({
-        requestStartDate: "2025-12-30",
-        requestEndDate: "2026-01-02",
+        realRestEndDate: "2025-01-03",
+        returnToWorkDate: "2025-01-04",
       }),
     ]);
   });

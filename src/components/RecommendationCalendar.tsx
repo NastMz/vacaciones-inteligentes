@@ -58,13 +58,17 @@ export function RecommendationCalendar({
             Del {formatDateFull(recommendation.realRestStartDate)} al{" "}
             {formatDateFull(recommendation.realRestEndDate)}
           </p>
+          <p className="text-xs text-[#4a6a80] mt-2 max-w-2xl">
+            Los días marcados como extensión forman parte del descanso real, pero no se cobran
+            como vacaciones porque corresponden a festivos o días no laborables.
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-2 text-[11px] text-[#9ab8cc]">
-          <Legend label="Vacación solicitada" className="bg-accent/15 border-accent/35 text-accent" />
+          <Legend label="Día cobrado" className="bg-accent/15 border-accent/35 text-accent" />
           <Legend label="Festivo" className="bg-success-bg border-success/25 text-success" />
           <Legend label="Fin de semana / no laboral" className="bg-white/[0.04] border-white/10 text-[#d1e4f0]" />
-          <Legend label="Extensión" className="bg-navy-950 border-white/10 text-[#6a8ba0]" />
+          <Legend label="Extensión no cobrada" className="bg-navy-950 border-white/10 text-[#6a8ba0]" />
         </div>
       </div>
 
@@ -186,7 +190,7 @@ function DayCard({ day }: { day: CalendarDay }) {
       </div>
 
       <div className="flex flex-wrap gap-1.5 mb-2">
-        {day.isRequestedVacation && <Tag className="bg-accent/15 border-accent/35 text-accent">Vacación</Tag>}
+        {day.isRequestedVacation && <Tag className="bg-accent/15 border-accent/35 text-accent">Día cobrado</Tag>}
         {day.isHoliday && <Tag className="bg-success-bg border-success/25 text-success">Festivo</Tag>}
         {day.isWeekendRest && (
           <Tag className="bg-white/[0.04] border-white/10 text-[#d1e4f0]">No laboral</Tag>
@@ -198,10 +202,10 @@ function DayCard({ day }: { day: CalendarDay }) {
 
       <p className="text-xs text-[#8aa7b9]">
         {day.isRequestedVacation
-          ? "Cuenta como día hábil solicitado."
+          ? "Cuenta como día hábil cobrado de vacaciones."
           : day.isHoliday
             ? day.holidayName
-            : "Descanso por fin de semana o día no laboral."}
+            : "Descanso no cobrado por fin de semana o día no laboral."}
       </p>
     </article>
   );

@@ -69,6 +69,11 @@ export function generateRecommendations(
 
       const requestEndDate = new Date(d);
 
+      if (requestEndDate > rangeEnd) {
+        current = addDays(current, 1);
+        continue;
+      }
+
       // ── Paso 2: extender hacia atrás ────────────────────────
       let realRestStart = new Date(current);
       let prev = addDays(realRestStart, -1);
@@ -92,6 +97,12 @@ export function generateRecommendations(
         realRestEnd = new Date(next);
         next = addDays(next, 1);
       }
+
+      const returnToWorkDate = getNextWorkingDay(
+        realRestEnd,
+        holidays,
+        worksOnSaturday
+      );
 
       // ── Métricas ─────────────────────────────────────────────
       const calendarDaysRested =
@@ -131,6 +142,7 @@ export function generateRecommendations(
         requestEndDate: toDateKey(requestEndDate),
         realRestStartDate: toDateKey(realRestStart),
         realRestEndDate: toDateKey(realRestEnd),
+        returnToWorkDate: toDateKey(returnToWorkDate),
         vacationDaysUsed: vacationDaysToUse,
         calendarDaysRested,
         efficiencyRatio,
@@ -166,4 +178,19 @@ export function generateRecommendations(
       return true;
     })
     .slice(0, 10);
+}
+
+function getNextWorkingDay(
+  date: Date,
+  holidays: Map<string, string>,
+  worksOnSaturday: boolean
+): Date {
+  let current = addDays(date, 1);
+  let guard = 0;
+
+  while (isNonWorkingDay(current, holidays, worksOnSaturday) && guard++ < 30) {
+    current = addDays(current, 1);
+  }
+
+  return current;
 }

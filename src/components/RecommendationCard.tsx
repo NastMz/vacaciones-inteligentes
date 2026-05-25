@@ -33,16 +33,26 @@ export function RecommendationCard({
       </div>
 
       {/* Dates */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <DateBlock
-          label="Solicitar vacaciones"
+          label="Primer día cobrado"
           primary={formatDateFull(r.requestStartDate)}
-          secondary={"hasta " + formatDateFull(r.requestEndDate)}
+          secondary="Inicio de vacaciones cobradas"
+        />
+        <DateBlock
+          label="Último día cobrado"
+          primary={formatDateFull(r.requestEndDate)}
+          secondary="Fin de vacaciones cobradas"
         />
         <DateBlock
           label="Descanso real"
           primary={formatDateFull(r.realRestStartDate)}
           secondary={"hasta " + formatDateFull(r.realRestEndDate)}
+        />
+        <DateBlock
+          label="Vuelves al trabajo"
+          primary={formatDateFull(r.returnToWorkDate)}
+          secondary="Primer día laboral después del descanso"
         />
       </div>
 

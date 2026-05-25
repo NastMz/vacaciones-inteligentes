@@ -18,6 +18,7 @@ export type VacationRecommendation = {
   requestEndDate: string;
   realRestStartDate: string;
   realRestEndDate: string;
+  returnToWorkDate: string;
   vacationDaysUsed: number;
   calendarDaysRested: number;
   efficiencyRatio: number;

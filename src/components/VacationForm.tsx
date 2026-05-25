@@ -129,6 +129,11 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
 
       </div>
 
+      <p className="mb-5 text-xs text-[#4a6a80] leading-relaxed">
+        El rango de b\u00fasqueda limita los d\u00edas de vacaciones cobrados; el descanso real
+        puede extenderse por fines de semana o festivos.
+      </p>
+
       <button
         type="submit"
         disabled={isLoading}
