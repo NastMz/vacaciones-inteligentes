@@ -65,6 +65,13 @@ export default function Home() {
               </div>
             ) : (
               <>
+                {results.length > 1 && (
+                  <RecommendationTable
+                    recommendations={results}
+                    selectedIndex={selectedIndex}
+                    onSelect={setSelectedIndex}
+                  />
+                )}
                 {selectedRecommendation && (
                   <>
                     <RecommendationCard
@@ -80,13 +87,6 @@ export default function Home() {
                       />
                     )}
                   </>
-                )}
-                {results.length > 1 && (
-                  <RecommendationTable
-                    recommendations={results}
-                    selectedIndex={selectedIndex}
-                    onSelect={setSelectedIndex}
-                  />
                 )}
               </>
             )}

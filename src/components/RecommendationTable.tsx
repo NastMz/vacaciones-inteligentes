@@ -71,9 +71,14 @@ function Row({
       : "hover:bg-white/[0.015]";
 
   const td = `${base} ${rowBg}`;
+  const selectRow = () => onSelect(i);
 
   return (
-    <tr className={`${rowBg} ${isSelected ? "outline outline-1 outline-accent/35 -outline-offset-1" : ""}`}>
+    <tr
+      className={`${rowBg} cursor-pointer ${isSelected ? "outline outline-1 outline-accent/35 -outline-offset-1" : ""}`}
+      onClick={selectRow}
+      aria-label={isSelected ? `Opción ${i + 1} seleccionada` : `Seleccionar opción ${i + 1}`}
+    >
       <td className={td + " text-[#3a5a70]"}>
         <div className="flex items-center gap-2 whitespace-nowrap">
           <span>{i + 1}</span>
@@ -109,7 +114,10 @@ function Row({
       <td className={td + " text-right whitespace-nowrap"}>
         <button
           type="button"
-          onClick={() => onSelect(i)}
+          onClick={(event) => {
+            event.stopPropagation();
+            selectRow();
+          }}
           className={`rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
             isSelected
               ? "border-accent/40 bg-accent/10 text-accent"
