@@ -50,7 +50,7 @@ O conectar el repositorio en vercel.com — detecta Next.js automáticamente.
 
 **Fijos:** Año Nuevo, Día del Trabajo, Independencia, Batalla de Boyacá, Inmaculada Concepción, Navidad
 
-**Ley Emiliani** (se mueven al lunes siguiente): Reyes Magos, San José, San Pedro y San Pablo, Asunción de la Virgen, Día de la Raza, Todos los Santos, Independencia de Cartagena
+**Ley Emiliani** (se mueven al lunes siguiente): Reyes Magos, San José, San Pedro y San Pablo, Nuestra Señora del Rosario de Chiquinquirá, Asunción de la Virgen, Día de la Raza, Todos los Santos, Independencia de Cartagena
 
 **Semana Santa:** Jueves Santo, Viernes Santo
 

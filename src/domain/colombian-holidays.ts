@@ -62,6 +62,7 @@ export function getColombianHolidays(year: number): Map<string, string> {
   add(emiliani(1, 6),   "Reyes Magos");
   add(emiliani(3, 19),  "San José");
   add(emiliani(6, 29),  "San Pedro y San Pablo");
+  add(emiliani(7, 9),   "Nuestra Señora del Rosario de Chiquinquirá");
   add(emiliani(8, 15),  "Asunción de la Virgen");
   add(emiliani(10, 12), "Día de la Raza");
   add(emiliani(11, 1),  "Todos los Santos");

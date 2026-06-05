@@ -291,6 +291,34 @@ describe("generateRecommendations", () => {
     ]);
   });
 
+  it("extends real rest across the new July 9 Emiliani holiday", () => {
+    const recommendations = generateRecommendations(
+      createInput({
+        year: 2026,
+        searchStartDate: "2026-07-10",
+        searchEndDate: "2026-07-10",
+      })
+    );
+
+    expect(recommendations).toEqual([
+      expect.objectContaining({
+        requestStartDate: "2026-07-10",
+        requestEndDate: "2026-07-10",
+        realRestStartDate: "2026-07-10",
+        realRestEndDate: "2026-07-13",
+        returnToWorkDate: "2026-07-14",
+        calendarDaysRested: 4,
+        weekendsIncluded: 2,
+      }),
+    ]);
+    expect(recommendations[0]?.holidaysIncluded).toEqual([
+      expect.objectContaining({
+        date: "2026-07-13",
+        name: "Nuestra Señora del Rosario de Chiquinquirá",
+      }),
+    ]);
+  });
+
   it("returns recommendations sorted by calendar days for MAX_TOTAL_REST", () => {
     const recommendations = generateRecommendations(
       createInput({
