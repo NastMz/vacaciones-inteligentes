@@ -1,5 +1,15 @@
 import type { Metadata } from "next";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import "./tokens.css";
 import "./globals.css";
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+  variable: "--font-bricolage",
+});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 const title = "Vacaciones Inteligentes Colombia";
 const description =
@@ -28,7 +38,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html
+      lang="es"
+      className={`${bricolage.variable} ${geist.variable} ${geistMono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

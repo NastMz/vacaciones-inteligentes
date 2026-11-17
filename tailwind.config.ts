@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss";
 
+// Every colour and font resolves to a token in src/app/tokens.css.
+const token = (name: string) => `var(--color-${name})`;
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,30 +12,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          950: "#0b1623",
-          900: "#0f1f30",
-          800: "#121f30",
-          700: "#1a2d42",
+        paper: { DEFAULT: token("paper"), 2: token("paper-2"), 3: token("paper-3") },
+        card: token("card"),
+        ink: { DEFAULT: token("ink"), 2: token("ink-2"), muted: token("muted") },
+        rule: { DEFAULT: token("rule"), 2: token("rule-2") },
+        sun: {
+          DEFAULT: token("accent"),
+          soft: token("accent-soft"),
+          strong: token("accent-strong"),
+          ink: token("accent-ink"),
         },
-        accent: "#f4a261",
-        ink: {
-          DEFAULT: "#d1e4f0",
-          soft: "#c8dce8",
-          200: "#9ab8cc",
-          300: "#8aa7b9",
-          400: "#7ea0b7",
-          500: "#6a8ba0",
-          600: "#5a7a90",
-        },
-        success: {
-          DEFAULT: "#2ec482",
-          bg: "#0f2318",
-          dim: "#1a3028",
-        },
+        sea: { DEFAULT: token("sea"), soft: token("sea-soft"), ink: token("sea-ink") },
+        focus: token("focus"),
       },
       fontFamily: {
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "monospace"],
+        display: ["var(--font-display)"],
+        sans: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
+      },
+      borderRadius: {
+        ticket: "var(--radius-ticket)",
+        control: "var(--radius-control)",
+      },
+      transitionTimingFunction: {
+        out: "var(--ease-out)",
       },
     },
   },

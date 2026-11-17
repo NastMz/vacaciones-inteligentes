@@ -7,134 +7,67 @@ interface Props {
   onSelect: (index: number) => void;
 }
 
-export function RecommendationTable({
-  recommendations,
-  selectedIndex,
-  onSelect,
-}: Props) {
+/**
+ * Ranked alternatives as a stack of ticket stubs. Selecting one swaps the
+ * boarding pass and the calendar.
+ */
+export function RecommendationTable({ recommendations, selectedIndex, onSelect }: Props) {
   return (
-    <div className="bg-navy-800 border border-white/[0.07] rounded-2xl p-6">
-      <p className="text-[10px] font-semibold text-ink-300 uppercase tracking-widest mb-4">
-        Top {recommendations.length} opciones
-      </p>
+    <section aria-labelledby="alternatives-title">
+      <h2 id="alternatives-title" className="font-display text-2xl font-bold text-ink">
+        Otras salidas
+      </h2>
+      <p className="mt-1 text-sm text-ink-muted">Ordenadas de mejor a peor. Toca una para verla.</p>
 
-      <div className="overflow-x-auto themed-scrollbar pb-2">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-white/[0.05]">
-              {["#", "Días cobrados", "Descanso real", "Vuelves", "Días", "+ Extra", "Ratio", "Festivos", "Acción"].map(
-                (h) => (
-                  <th
-                    key={h}
-                    className="text-left py-2 px-3 text-ink-300 font-semibold uppercase tracking-wide whitespace-nowrap"
+      <ol className="mt-4 flex flex-col gap-2">
+        {recommendations.map((r, i) => {
+          const isSelected = i === selectedIndex;
+          return (
+            <li key={`${r.realRestStartDate}::${r.realRestEndDate}`}>
+              <button
+                type="button"
+                onClick={() => onSelect(i)}
+                aria-pressed={isSelected}
+                aria-label={`Opción ${i + 1}: ${r.calendarDaysRested} días de descanso, +${r.extraRestDays} extra, del ${formatDateShort(r.requestStartDate)} al ${formatDateShort(r.requestEndDate)}`}
+                className={`grid w-full grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 rounded-control border px-3 py-2.5 text-left transition-colors duration-150 ease-out ${
+                  isSelected
+                    ? "border-ink bg-ink text-paper"
+                    : "border-rule bg-card text-ink hover:border-ink-muted hover:bg-paper-2"
+                }`}
+              >
+                <span
+                  className={`font-mono text-sm tabular-nums ${isSelected ? "text-sun" : "text-ink-muted"}`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate font-mono text-sm">
+                    {formatDateShort(r.realRestStartDate)} → {formatDateShort(r.returnToWorkDate)}
+                  </span>
+                  <span
+                    className={`block truncate text-xs ${isSelected ? "text-paper-3" : "text-ink-muted"}`}
                   >
-                    {h}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {recommendations.map((r, i) => (
-              <Row
-                key={`${r.realRestStartDate}::${r.realRestEndDate}`}
-                r={r}
-                i={i}
-                isSelected={i === selectedIndex}
-                onSelect={onSelect}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function Row({
-  r,
-  i,
-  isSelected,
-  onSelect,
-}: {
-  r: VacationRecommendation;
-  i: number;
-  isSelected: boolean;
-  onSelect: (index: number) => void;
-}) {
-  const isBest = i === 0;
-  const base = "py-2.5 px-3 border-b border-white/[0.03]";
-  const rowBg = isSelected
-    ? "bg-accent/8"
-    : isBest
-      ? "bg-success-bg/40"
-      : "hover:bg-white/[0.015]";
-
-  const td = `${base} ${rowBg}`;
-  const selectRow = () => onSelect(i);
-
-  return (
-    <tr
-      className={`${rowBg} cursor-pointer ${isSelected ? "outline outline-1 outline-accent/35 -outline-offset-1" : ""}`}
-      onClick={selectRow}
-      aria-label={isSelected ? `Opción ${i + 1} seleccionada` : `Seleccionar opción ${i + 1}`}
-    >
-      <td className={td + " text-ink-400"}>
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          <span>{i + 1}</span>
-          {isBest && (
-            <span className="rounded-full border border-success/20 bg-success-bg px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-success">
-              Mejor
-            </span>
-          )}
-          {isSelected && (
-            <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-              Seleccionada
-            </span>
-          )}
-        </div>
-      </td>
-      <td className={td + " font-mono text-ink-200 whitespace-nowrap"}>
-        {formatDateShort(r.requestStartDate)} → {formatDateShort(r.requestEndDate)}
-      </td>
-      <td className={td + " font-mono text-ink-300 whitespace-nowrap"}>
-        {formatDateShort(r.realRestStartDate)} – {formatDateShort(r.realRestEndDate)}
-      </td>
-      <td className={td + " font-mono text-ink-400 whitespace-nowrap"}>
-        {formatDateShort(r.returnToWorkDate)}
-      </td>
-      <td className={td + " text-center font-semibold text-ink-soft"}>
-        {r.calendarDaysRested}
-      </td>
-      <td className={td + " text-center font-semibold text-success whitespace-nowrap"}>
-        +{r.extraRestDays} extra
-      </td>
-      <td className={td + " text-center text-ink-500 whitespace-nowrap"}>
-        {r.efficiencyRatio}×
-      </td>
-      <td className={td + " text-ink-400 max-w-[180px] truncate"}>
-        {r.holidaysIncluded.length > 0
-          ? r.holidaysIncluded.map((h) => h.name).join(" · ")
-          : "—"}
-      </td>
-      <td className={td + " text-right whitespace-nowrap"}>
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            selectRow();
-          }}
-          className={`rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
-            isSelected
-              ? "border-accent/40 bg-accent/10 text-accent"
-              : "border-white/10 text-ink-200 hover:border-white/20 hover:text-ink"
-          }`}
-          aria-pressed={isSelected}
-          aria-label={isSelected ? `Opción ${i + 1} seleccionada` : `Seleccionar opción ${i + 1}`}
-        >
-          {isSelected ? "Vista actual" : "Seleccionar"}
-        </button>
-      </td>
-    </tr>
+                    Pides {r.vacationDaysUsed} {r.vacationDaysUsed === 1 ? "día" : "días"}
+                    {r.holidaysIncluded.length > 0
+                      ? ` · ${r.holidaysIncluded.map((h) => h.name).join(", ")}`
+                      : ""}
+                  </span>
+                </span>
+                <span className="text-right">
+                  <span className="block font-display text-xl font-extrabold leading-none tabular-nums">
+                    {r.calendarDaysRested}
+                  </span>
+                  <span
+                    className={`block font-mono text-xs tabular-nums ${isSelected ? "text-sun" : "text-sun-strong"}`}
+                  >
+                    +{r.extraRestDays}
+                  </span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }

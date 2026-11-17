@@ -1,0 +1,46 @@
+/* Hallmark · route: custom (bespoke) · structure: sentence-form planner + boarding-pass result + month almanac
+ * idea: "your vacation as a ticket: charged days on the pass, free days on the stub"
+ * theme: custom · vibe: "Caribbean postcard, sun-faded paper, ticket stub, postal stamp"
+ * paper: oklch(95.5% 0.022 82) · accent: oklch(64% 0.165 42) · display: Bricolage Grotesque · body: Geist
+ * axes: light / display-heavy / warm · studied: no · context: inferred
+ */
+:root {
+  /* Paper: sun-faded sand, tinted toward the sun hue */
+  --color-paper: oklch(95.5% 0.022 82);
+  --color-paper-2: oklch(92% 0.03 80);
+  --color-paper-3: oklch(87.5% 0.036 78);
+  /* Card stock: the ticket is a lighter sheet laid on the sand */
+  --color-card: oklch(98.6% 0.012 85);
+
+  /* Ink: deep Caribbean sea */
+  --color-ink: oklch(25% 0.04 252);
+  --color-ink-2: oklch(40% 0.038 248);
+  --color-muted: oklch(50% 0.032 245);
+
+  --color-rule: oklch(79% 0.036 76);
+  --color-rule-2: oklch(86% 0.03 78);
+
+  /* Accent: late-afternoon sun. Fill for charged days and the primary action. */
+  --color-accent: oklch(68% 0.165 45);
+  --color-accent-soft: oklch(88% 0.07 55);
+  --color-accent-strong: oklch(50% 0.15 38);
+  --color-accent-ink: oklch(22% 0.04 252);
+
+  /* Sea: holidays (festivos) */
+  --color-sea: oklch(50% 0.095 195);
+  --color-sea-soft: oklch(89% 0.045 190);
+  --color-sea-ink: oklch(97% 0.012 190);
+
+  --color-focus: oklch(52% 0.2 40);
+
+  --font-display: var(--font-bricolage), "Arial Narrow", sans-serif;
+  --font-body: var(--font-geist), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-ticket: 18px;
+  --radius-control: 10px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-short: 180ms;
+  --dur-medium: 320ms;
+}
