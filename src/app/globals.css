@@ -3,9 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  html,
   body {
-    background-color: #0b1623;
-    color: #d1e4f0;
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -13,32 +19,70 @@
   select,
   input[type="number"],
   input[type="date"] {
-    color-scheme: dark;
+    color-scheme: light;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 }
 
-@layer utilities {
-  .themed-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #f4a26155 #121f30;
+@layer components {
+  /* Inline control that sits inside the planner sentence */
+  .blank {
+    @apply font-display font-bold text-sun-strong bg-transparent border-0 border-b-2 border-dashed border-sun rounded-none px-1 cursor-pointer;
+    transition: border-color var(--dur-short) var(--ease-out);
+  }
+  .blank:hover {
+    border-bottom-style: solid;
+  }
+  .blank:focus-visible {
+    border-bottom-style: solid;
+    outline-offset: 4px;
   }
 
-  .themed-scrollbar::-webkit-scrollbar {
-    height: 10px;
+  /* Ticket perforation: punched notches + dashed tear line */
+  .ticket {
+    --notch: 14px;
+    -webkit-mask:
+      radial-gradient(circle var(--notch) at var(--tear-x) 0, transparent 98%, #000) top / 100% 51% no-repeat,
+      radial-gradient(circle var(--notch) at var(--tear-x) 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+    mask:
+      radial-gradient(circle var(--notch) at var(--tear-x) 0, transparent 98%, #000) top / 100% 51% no-repeat,
+      radial-gradient(circle var(--notch) at var(--tear-x) 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
   }
 
-  .themed-scrollbar::-webkit-scrollbar-track {
-    background: #121f30;
-    border-radius: 9999px;
+  .ticket-enter {
+    animation: ticket-print var(--dur-medium) var(--ease-out) both;
   }
+}
 
-  .themed-scrollbar::-webkit-scrollbar-thumb {
-    background: #f4a26155;
-    border: 2px solid #121f30;
-    border-radius: 9999px;
+@keyframes ticket-print {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .themed-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #f4a26188;
+@media (prefers-reduced-motion: reduce) {
+  .ticket-enter {
+    animation: fade 150ms linear both;
+  }
+  .blank {
+    transition: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

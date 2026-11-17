@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { addDays, fromDateKey, isNonWorkingDay, toDateKey } from "@/domain/business-day";
 import { getColombianHolidays } from "@/domain/colombian-holidays";
 import { formatDateFull } from "@/lib/formatters";
@@ -34,7 +33,7 @@ const MONTH_NAMES = [
   "Diciembre",
 ] as const;
 
-const WEEKDAY_SHORT = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"] as const;
+const WEEKDAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"] as const;
 
 export function RecommendationCalendar({
   recommendation,
@@ -43,53 +42,41 @@ export function RecommendationCalendar({
 }: Props) {
   const calendarDays = buildCalendarDays(recommendation, worksOnSaturday, year);
   const monthGroups = groupByMonth(calendarDays);
+  const holidays = calendarDays.filter((day) => day.isHoliday);
 
   return (
-    <section className="bg-navy-800 border border-white/[0.07] rounded-2xl p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
-        <div>
-          <p className="text-[10px] font-semibold text-ink-300 uppercase tracking-widest mb-1">
-            Calendario del descanso
-          </p>
-          <h2 className="text-lg font-semibold text-ink">
-            Día por día del período real
-          </h2>
-          <p className="text-sm text-ink-500 mt-1">
-            Del {formatDateFull(recommendation.realRestStartDate)} al{" "}
-            {formatDateFull(recommendation.realRestEndDate)}
-          </p>
-          <p className="text-xs text-ink-300 mt-2 max-w-2xl">
-            Los días marcados como extensión forman parte del descanso real, pero no se cobran
-            como vacaciones porque corresponden a festivos o días no laborables.
-          </p>
-        </div>
+    <section aria-labelledby="calendar-title">
+      <h2 id="calendar-title" className="font-display text-2xl font-bold text-ink">
+        Tu descanso, día por día
+      </h2>
+      <p className="mt-1 max-w-prose text-sm text-ink-muted">
+        Del {formatDateFull(recommendation.realRestStartDate)} al{" "}
+        {formatDateFull(recommendation.realRestEndDate)}. Solo los días en naranja salen de tus
+        vacaciones; el resto te lo regalan los fines de semana y los festivos.
+      </p>
 
-        <div className="flex flex-wrap gap-2 text-[11px] text-ink-200">
-          <Legend label="Día cobrado" className="bg-accent/15 border-accent/35 text-accent" />
-          <Legend label="Festivo" className="bg-success-bg border-success/25 text-success" />
-          <Legend label="Fin de semana / no laboral" className="bg-white/[0.04] border-white/10 text-ink" />
-          <Legend label="Extensión no cobrada" className="bg-navy-950 border-white/10 text-ink-500" />
-        </div>
-      </div>
+      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-2">
+        <LegendItem swatch="bg-sun" label="Día que pides" />
+        <LegendItem swatch="bg-sea" label="Festivo" />
+        <LegendItem swatch="bg-paper-3 ring-1 ring-inset ring-rule" label="Fin de semana" />
+      </ul>
 
-      <div className="space-y-5">
+      <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
         {monthGroups.map(([monthKey, days]) => (
-          <section key={monthKey}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-ink">
-                {formatMonthTitle(days[0].dateKey)}
-              </h3>
-              <span className="text-[11px] text-ink-300">{days.length} días</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {days.map((day) => (
-                <DayCard key={day.dateKey} day={day} />
-              ))}
-            </div>
-          </section>
+          <MonthGrid key={monthKey} monthKey={monthKey} days={days} />
         ))}
       </div>
+
+      {holidays.length > 0 && (
+        <ul className="mt-5 space-y-1 text-sm text-ink-2">
+          {holidays.map((day) => (
+            <li key={day.dateKey}>
+              <span className="font-mono text-sea">{formatDateShortKey(day.dateKey)}</span>{" "}
+              {day.holidayName}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -165,66 +152,86 @@ function groupByMonth(days: CalendarDay[]) {
   return Array.from(groups.entries());
 }
 
-function formatMonthTitle(dateKey: string) {
-  const [year, month] = dateKey.split("-").map(Number);
+function formatMonthTitle(monthKey: string) {
+  const [year, month] = monthKey.split("-").map(Number);
   return `${MONTH_NAMES[month - 1]} ${year}`;
 }
 
-function DayCard({ day }: { day: CalendarDay }) {
-  const [year, month, date] = day.dateKey.split("-").map(Number);
-  const weekday = WEEKDAY_SHORT[new Date(year, month - 1, date).getDay()];
-  const tone = day.isRequestedVacation
-    ? "bg-accent/10 border-accent/30"
-    : day.isHoliday
-      ? "bg-success-bg/70 border-success/25"
-      : "bg-white/[0.03] border-white/[0.08]";
+function formatDateShortKey(dateKey: string) {
+  const [, month, date] = dateKey.split("-").map(Number);
+  return `${date} ${MONTH_NAMES[month - 1].slice(0, 3).toLowerCase()}`;
+}
+
+/** Full month grid, Monday first, with the rest period painted in. */
+function MonthGrid({ monthKey, days }: { monthKey: string; days: CalendarDay[] }) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const byKey = new Map(days.map((day) => [day.dateKey, day]));
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const leadingBlanks = (new Date(year, month - 1, 1).getDay() + 6) % 7;
 
   return (
-    <article className={`rounded-xl border p-3 ${tone}`}>
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <div>
-          <p className="text-[11px] uppercase tracking-wide text-ink-300">{weekday}</p>
-          <p className="font-mono text-base text-ink">{day.dateKey}</p>
-        </div>
-        <span className="text-2xl font-mono text-ink tabular-nums">{date}</span>
+    <figure className="rounded-ticket bg-card p-4 shadow-[0_1px_0_var(--color-rule)]">
+      <figcaption className="mb-3 flex items-baseline justify-between">
+        <span className="font-display text-lg font-bold text-ink">{formatMonthTitle(monthKey)}</span>
+        <span className="font-mono text-xs text-ink-muted">
+          {days.length} {days.length === 1 ? "día" : "días"} fuera
+        </span>
+      </figcaption>
+      <div aria-hidden="true" className="grid grid-cols-7 gap-1 text-center">
+        {WEEKDAY_INITIALS.map((initial, i) => (
+          <span key={i} className="pb-1 font-mono text-[11px] text-ink-muted">
+            {initial}
+          </span>
+        ))}
       </div>
-
-      <div className="flex flex-wrap gap-1.5 mb-2">
-        {day.isRequestedVacation && <Tag className="bg-accent/15 border-accent/35 text-accent">Día cobrado</Tag>}
-        {day.isHoliday && <Tag className="bg-success-bg border-success/25 text-success">Festivo</Tag>}
-        {day.isWeekendRest && (
-          <Tag className="bg-white/[0.04] border-white/10 text-ink">No laboral</Tag>
-        )}
-        {day.isExtension && (
-          <Tag className="bg-navy-950 border-white/10 text-ink-500">Extensión</Tag>
-        )}
-      </div>
-
-      <p className="text-xs text-ink-300">
-        {day.isRequestedVacation
-          ? "Cuenta como día hábil cobrado de vacaciones."
-          : day.isHoliday
-            ? day.holidayName
-            : "Descanso no cobrado por fin de semana o día no laboral."}
-      </p>
-    </article>
+      <ol className="grid grid-cols-7 gap-1 text-center">
+        {Array.from({ length: leadingBlanks }, (_, i) => (
+          <li key={`blank-${i}`} aria-hidden="true" />
+        ))}
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const date = i + 1;
+          const dateKey = `${monthKey}-${String(date).padStart(2, "0")}`;
+          return <DayCell key={dateKey} date={date} day={byKey.get(dateKey)} />;
+        })}
+      </ol>
+    </figure>
   );
 }
 
-function Legend({ label, className }: { label: string; className: string }) {
-  return <Tag className={className}>{label}</Tag>;
+function DayCell({ date, day }: { date: number; day?: CalendarDay }) {
+  if (!day) {
+    return (
+      <li className="py-1.5 font-mono text-sm tabular-nums text-rule">{date}</li>
+    );
+  }
+
+  const tone = day.isRequestedVacation
+    ? "bg-sun text-sun-ink font-semibold"
+    : day.isHoliday
+      ? "bg-sea text-sea-ink font-semibold"
+      : "bg-paper-3 text-ink";
+  const description = day.isRequestedVacation
+    ? "día de vacaciones que pides"
+    : day.isHoliday
+      ? `festivo: ${day.holidayName}`
+      : "fin de semana, no se cobra";
+
+  return (
+    <li
+      aria-label={`${date}, ${description}`}
+      title={day.isHoliday ? day.holidayName : undefined}
+      className={`rounded-md py-1.5 font-mono text-sm tabular-nums ${tone}`}
+    >
+      {date}
+    </li>
+  );
 }
 
-function Tag({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className: string;
-}) {
+function LegendItem({ swatch, label }: { swatch: string; label: string }) {
   return (
-    <span className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${className}`}>
-      {children}
-    </span>
+    <li className="flex items-center gap-2">
+      <span aria-hidden="true" className={`h-3 w-3 rounded-sm ${swatch}`} />
+      {label}
+    </li>
   );
 }

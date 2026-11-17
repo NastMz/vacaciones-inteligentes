@@ -8,14 +8,19 @@ interface Props {
   isLoading: boolean;
 }
 
+type Mode = VacationInput["optimizationMode"];
+
+const YEARS = [2025, 2026, 2027, 2028];
+
+/**
+ * The planner reads as one sentence; each input is a blank inside it.
+ */
 export function VacationForm({ onSubmit, isLoading }: Props) {
   const currentYear = new Date().getFullYear();
-  const [year, setYear] = useState(currentYear);
+  const [year, setYear] = useState(YEARS.includes(currentYear) ? currentYear : YEARS[1]);
   const [daysToUse, setDaysToUse] = useState(5);
   const [worksOnSaturday, setWorksOnSaturday] = useState(false);
-  const [mode, setMode] = useState<"MAX_TOTAL_REST" | "MAX_EFFICIENCY">(
-    "MAX_TOTAL_REST"
-  );
+  const [mode, setMode] = useState<Mode>("MAX_TOTAL_REST");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
@@ -23,7 +28,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
     e.preventDefault();
     onSubmit({
       year,
-      vacationDaysToUse: Math.max(1, daysToUse),
+      vacationDaysToUse: Math.min(30, Math.max(1, daysToUse || 1)),
       worksOnSaturday,
       optimizationMode: mode,
       searchStartDate: fromDate || undefined,
@@ -31,161 +36,121 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
     });
   }
 
-  const fieldLabel = "text-[10px] font-semibold text-ink-300 uppercase tracking-widest mb-1.5 block";
-  const input =
-    "w-full bg-navy-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-accent transition-colors";
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-navy-800 border border-white/[0.07] rounded-2xl p-6"
-    >
-      <p className={fieldLabel + " mb-5"}>Parámetros del cálculo</p>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
-
-        {/* Año */}
-        <div>
-          <label htmlFor="year" className={fieldLabel}>Año</label>
-          <select
-            id="year"
-            value={year}
-            onChange={(e) => setYear(+e.target.value)}
-            className={input}
-          >
-            {[2025, 2026, 2027, 2028].map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Días */}
-        <div>
-          <label htmlFor="days" className={fieldLabel}>Días disponibles</label>
-          <input
-            id="days"
-            type="number"
-            min={1}
-            max={30}
-            value={daysToUse}
-            onChange={(e) => setDaysToUse(+e.target.value)}
-            className={input}
-          />
-          <p className="mt-1 text-[11px] text-ink-300 leading-relaxed">
-            ¿Cuántos días quieres usar como máximo?
-          </p>
-        </div>
-
-        {/* Sábados */}
-        <div>
-          <span className={fieldLabel}>¿Trabajas sábados?</span>
-          <ToggleGroup
-            value={worksOnSaturday}
-            onChange={setWorksOnSaturday}
-            options={[
-              { value: false, label: "No" },
-              { value: true, label: "Sí" },
-            ]}
-          />
-        </div>
-
-        {/* Modo */}
-        <div>
-          <span className={fieldLabel}>Optimizar por</span>
-          <ToggleGroup
-            value={mode}
-            onChange={setMode}
-            options={[
-              { value: "MAX_TOTAL_REST", label: "Más descanso" },
-              { value: "MAX_EFFICIENCY", label: "Mejor aprovechamiento" },
-            ]}
-          />
-          <p className="mt-1 text-[11px] text-ink-300 leading-relaxed">
-            {mode === "MAX_TOTAL_REST"
-              ? "Prioriza la mayor cantidad de días seguidos fuera."
-              : "Prioriza sumar más días extra por fines de semana y festivos."}
-          </p>
-        </div>
-
-        {/* Desde */}
-        <div>
-          <label htmlFor="from" className={fieldLabel}>
-            Desde <span className="normal-case font-normal text-ink-400">(opcional)</span>
-          </label>
-          <input
-            id="from"
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className={input}
-          />
-        </div>
-
-        {/* Hasta */}
-        <div>
-          <label htmlFor="to" className={fieldLabel}>
-            Hasta <span className="normal-case font-normal text-ink-400">(opcional)</span>
-          </label>
-          <input
-            id="to"
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className={input}
-          />
-        </div>
-
-      </div>
-
-      <p className="mb-5 text-xs text-ink-300 leading-relaxed">
-        El rango de búsqueda limita los días de vacaciones cobrados; el descanso real
-        puede extenderse por fines de semana o festivos. El optimizador puede usar
-        menos días si el modo de mejor aprovechamiento encuentra más días extra.
+    <form onSubmit={handleSubmit} aria-label="Planear vacaciones">
+      <p className="font-display text-[clamp(1.5rem,4.2vw,2.5rem)] font-medium leading-[1.45] text-ink [overflow-wrap:anywhere]">
+        Tengo{" "}
+        <label className="sr-only" htmlFor="days">
+          Días de vacaciones disponibles
+        </label>
+        <input
+          id="days"
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={30}
+          value={daysToUse}
+          onChange={(e) => setDaysToUse(+e.target.value)}
+          className="blank w-[2.4ch] text-center tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+        />{" "}
+        días de vacaciones en{" "}
+        <label className="sr-only" htmlFor="year">
+          Año
+        </label>
+        <select
+          id="year"
+          value={year}
+          onChange={(e) => setYear(+e.target.value)}
+          className="blank appearance-none"
+        >
+          {YEARS.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+        . Los sábados{" "}
+        <label className="sr-only" htmlFor="saturday">
+          ¿Trabajas los sábados?
+        </label>
+        <select
+          id="saturday"
+          value={worksOnSaturday ? "yes" : "no"}
+          onChange={(e) => setWorksOnSaturday(e.target.value === "yes")}
+          className="blank appearance-none"
+        >
+          <option value="no">no trabajo</option>
+          <option value="yes">sí trabajo</option>
+        </select>{" "}
+        y quiero{" "}
+        <label className="sr-only" htmlFor="mode">
+          Qué priorizar
+        </label>
+        <select
+          id="mode"
+          value={mode}
+          onChange={(e) => setMode(e.target.value as Mode)}
+          className="blank appearance-none"
+        >
+          <option value="MAX_TOTAL_REST">el descanso más largo</option>
+          <option value="MAX_EFFICIENCY">sacarle jugo a cada día</option>
+        </select>
+        .
       </p>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-accent hover:opacity-90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-navy-950 font-bold rounded-xl py-3 text-sm transition-all"
-      >
-        {isLoading ? "Calculando…" : "Encontrar mejores fechas →"}
-      </button>
+      <p className="mt-3 max-w-prose text-sm text-ink-muted">
+        {mode === "MAX_TOTAL_REST"
+          ? "Buscamos la mayor cantidad de días seguidos fuera, usando hasta todos tus días."
+          : "Buscamos el bloque que más días gratis te regala por cada día que pides, aunque uses menos."}
+      </p>
+
+      <fieldset className="mt-8 flex flex-wrap items-end gap-x-4 gap-y-3 border-t border-rule pt-5">
+        <legend className="sr-only">Rango de fechas opcional</legend>
+        <span className="w-full text-sm text-ink-2 sm:w-auto sm:self-center">
+          ¿Solo puedes en ciertas fechas?
+        </span>
+        <DateField id="from" label="Desde" value={fromDate} onChange={setFromDate} />
+        <DateField id="to" label="Hasta" value={toDate} onChange={setToDate} />
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          aria-busy={isLoading}
+          className="ml-auto inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-control bg-ink px-6 py-3.5 font-display text-lg font-bold text-paper transition-[background-color,transform] duration-150 ease-out hover:bg-ink-2 active:translate-y-px disabled:cursor-wait disabled:bg-ink-muted sm:w-auto"
+        >
+          {isLoading ? "Buscando fechas…" : "Buscar mis fechas"}
+          <span aria-hidden="true" className="text-sun">
+            →
+          </span>
+        </button>
+      </fieldset>
     </form>
   );
 }
 
-// ── Toggle group reutilizable ──────────────────────────────────
-interface ToggleOption<T> {
-  value: T;
+function DateField({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
   label: string;
-}
-
-interface ToggleGroupProps<T> {
-  value: T;
-  onChange: (v: T) => void;
-  options: ToggleOption<T>[];
-}
-
-function ToggleGroup<T>({ value, onChange, options }: ToggleGroupProps<T>) {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
-    <div className="flex gap-1 bg-navy-950 border border-white/10 rounded-lg p-1">
-      {options.map((opt) => {
-        const isActive = value === opt.value;
-        return (
-          <button
-            key={String(opt.value)}
-            type="button"
-            onClick={() => onChange(opt.value)}
-            className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-all ${
-              isActive
-                ? "bg-accent text-navy-950"
-                : "text-ink-300 hover:text-ink"
-            }`}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
+    <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-none">
+      <label htmlFor={id} className="text-xs font-medium text-ink-muted">
+        {label}
+      </label>
+      <input
+        id={id}
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-control border border-rule bg-paper-2 px-3 py-2 font-mono text-sm text-ink transition-colors duration-150 ease-out hover:border-ink-muted"
+      />
     </div>
   );
 }
