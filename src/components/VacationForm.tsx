@@ -31,9 +31,9 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
     });
   }
 
-  const fieldLabel = "text-[10px] font-semibold text-[#8aa7b9] uppercase tracking-widest mb-1.5 block";
+  const fieldLabel = "text-[10px] font-semibold text-ink-300 uppercase tracking-widest mb-1.5 block";
   const input =
-    "w-full bg-navy-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-[#d1e4f0] focus:outline-none focus:border-accent transition-colors";
+    "w-full bg-navy-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-accent transition-colors";
 
   return (
     <form
@@ -71,8 +71,8 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
             onChange={(e) => setDaysToUse(+e.target.value)}
             className={input}
           />
-          <p className="mt-1 text-[11px] text-[#8aa7b9] leading-relaxed">
-            Hasta cuántos días querés usar.
+          <p className="mt-1 text-[11px] text-ink-300 leading-relaxed">
+            ¿Cuántos días quieres usar como máximo?
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
               { value: "MAX_EFFICIENCY", label: "Mejor aprovechamiento" },
             ]}
           />
-          <p className="mt-1 text-[11px] text-[#8aa7b9] leading-relaxed">
+          <p className="mt-1 text-[11px] text-ink-300 leading-relaxed">
             {mode === "MAX_TOTAL_REST"
               ? "Prioriza la mayor cantidad de días seguidos fuera."
               : "Prioriza sumar más días extra por fines de semana y festivos."}
@@ -110,7 +110,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
         {/* Desde */}
         <div>
           <label htmlFor="from" className={fieldLabel}>
-            Desde <span className="normal-case font-normal text-[#7ea0b7]">(opcional)</span>
+            Desde <span className="normal-case font-normal text-ink-400">(opcional)</span>
           </label>
           <input
             id="from"
@@ -124,7 +124,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
         {/* Hasta */}
         <div>
           <label htmlFor="to" className={fieldLabel}>
-            Hasta <span className="normal-case font-normal text-[#7ea0b7]">(opcional)</span>
+            Hasta <span className="normal-case font-normal text-ink-400">(opcional)</span>
           </label>
           <input
             id="to"
@@ -137,7 +137,7 @@ export function VacationForm({ onSubmit, isLoading }: Props) {
 
       </div>
 
-      <p className="mb-5 text-xs text-[#8aa7b9] leading-relaxed">
+      <p className="mb-5 text-xs text-ink-300 leading-relaxed">
         El rango de búsqueda limita los días de vacaciones cobrados; el descanso real
         puede extenderse por fines de semana o festivos. El optimizador puede usar
         menos días si el modo de mejor aprovechamiento encuentra más días extra.
@@ -179,7 +179,7 @@ function ToggleGroup<T>({ value, onChange, options }: ToggleGroupProps<T>) {
             className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-all ${
               isActive
                 ? "bg-accent text-navy-950"
-                : "text-[#8aa7b9] hover:text-[#d1e4f0]"
+                : "text-ink-300 hover:text-ink"
             }`}
           >
             {opt.label}
