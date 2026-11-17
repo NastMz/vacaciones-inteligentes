@@ -16,6 +16,15 @@ const config: Config = {
           700: "#1a2d42",
         },
         accent: "#f4a261",
+        ink: {
+          DEFAULT: "#d1e4f0",
+          soft: "#c8dce8",
+          200: "#9ab8cc",
+          300: "#8aa7b9",
+          400: "#7ea0b7",
+          500: "#6a8ba0",
+          600: "#5a7a90",
+        },
         success: {
           DEFAULT: "#2ec482",
           bg: "#0f2318",
